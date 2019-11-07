@@ -112,6 +112,9 @@ class Collector(object):
         # /var/log/splunkd_stderr.log.* with messages containing "amp4e" would contain HTTP errors
         self.add_data_from_logs(os.path.join(SPLUNK_HOME, 'var', 'log', 'splunk', 'splunkd_stderr.log'),
                                 'splunkd_stderr.log', True, True)
+        # /var/log/splunkd_stderr.log.* with messages containing "amp4e" would contain HTTP errors
+        self.add_data_from_logs(os.path.join(SPLUNK_HOME, 'var', 'log', 'splunk', 'splunkd-utility.log'),
+                                'splunkd-utility.log', True, True)
 
     # Do a connectivity test using curl (or similar) to export-streaming.amp.cisco.com,
     # export-streaming.eu.amp.cisco.com, export-streaming.apjc.amp.cisco.com
