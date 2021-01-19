@@ -9,5 +9,9 @@ RUN pip install setuptools --upgrade
 RUN pip install fabric
 ENV LD_LIBRARY_PATH=${SPLUNK_HOME}/lib:${LD_LIBRARY_PATH}
 ENV SPLUNK_DB=${SPLUNK_HOME}/var/lib/splunk
+COPY  . /opt/splunk/etc/apps/amp4e_events_input
 COPY amp_entrypoint.sh /sbin
 USER ${ANSIBLE_USER}
+WORKDIR /opt/splunk/etc/apps/amp4e_events_input
+ENTRYPOINT /sbin/amp_entrypoint.sh
+CMD start-service

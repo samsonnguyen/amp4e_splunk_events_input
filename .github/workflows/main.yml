@@ -1,0 +1,49 @@
+on: 
+  release:
+    types:
+    - published
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Login to Dockerhub
+      uses: docker/login-action@v1.8.0
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+    - uses: docker/setup-buildx-action@v1
+      if: ${{ !env.ACT }}
+    - name: build
+      if: ${{ !env.ACT }}
+      uses: docker/build-push-action@v2
+      with:
+        context: ./
+        file: ./Dockerfile
+        push: true
+        tags: amp4e/amp4e_splunk_events_input:latest
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: python:2.7
+    services:
+      splunk:
+        image: amp4e/amp4e_splunk_events_input:latest
+        ports:
+          - 8000:8000
+        env:
+          SPLUNK_START_ARGS: --accept-license
+          SPLUNK_PASSWORD: changeme
+          DEBUG: true
+    steps:
+    - uses: actions/checkout@v2
+    # - run: apt update && apt-get install -y python2.7 
+    - run: pip install -r requirements.txt
+    - name: wait for service
+      uses: nev7n/wait_for_response@v1
+      with:
+        url: 'http://splunk:8000/'
+        responseCode: 200
+        timeout: 120000
+        interval: 500
+    - run: python -m unittest discover
