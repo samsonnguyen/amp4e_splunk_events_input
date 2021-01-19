@@ -32,6 +32,10 @@ jobs:
           SPLUNK_START_ARGS: --accept-license
           SPLUNK_PASSWORD: changeme
           DEBUG: true
+        options: >-
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
     - uses: actions/checkout@v2
     # - run: apt update && apt-get install -y python2.7 
