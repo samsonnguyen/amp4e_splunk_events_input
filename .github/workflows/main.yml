@@ -26,7 +26,7 @@ jobs:
     - uses: actions/setup-python@v1
       with:
         python-version: "2.7.18"
-    - run: docker run --rm -d -e SPLUNK_START_ARGS=--accept-license -e SPLUNK_PASSWORD=changeme -p 8000:8000 -p 8191:8191 --name splunk splunk/splunk:7.3
+    - run: docker run --rm -d -e SPLUNK_START_ARGS=--accept-license -e SPLUNK_PASSWORD=changeme -p 8000:8000 -p 8191:8191 -p 8089:8089 --name splunk splunk/splunk:7.3
     - run: pip install -r requirements.txt
     - name: wait for service
       run: >-
@@ -44,4 +44,4 @@ jobs:
     - run: python -m unittest discover
     - name: cleanup
       if: ${{ always() }}
-      run: docker stop splunk && docker rm splunk
+      run: docker stop splunk
