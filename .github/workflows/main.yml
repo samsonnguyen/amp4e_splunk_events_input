@@ -26,6 +26,7 @@ jobs:
     - run: sudo apt-get update -y && sudo apt-get install -y python2.7 
     - run: docker-compose -f docker-compose.ci.yml up -d
     - run: pip install -r requirements.txt
+    - run: docker ps -a
     - name: wait for service
       uses: nev7n/wait_for_response@v1
       with:
