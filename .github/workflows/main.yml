@@ -48,6 +48,7 @@ jobs:
       if: ${{ always() }}
       run: docker stop splunk
   build_spl:
+    runs-on: ubuntu-latest
     container:
       image: splunk/splunk:7.3
       options: --user root
