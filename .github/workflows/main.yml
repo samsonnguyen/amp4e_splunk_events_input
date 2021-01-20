@@ -23,11 +23,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-python@v1
-      with:
-        python-version: "2.7.18"
+    - run: sudo apt-get update && sudo apt-get --no-install-recommends install python2.7 python-pip python-setuptools python-wheel -y
+    # Doesn't work using act
+    # - uses: actions/setup-python@v2
+    #   with:
+    #     python-version: 2.7.18
     - run: docker run --rm -d -e SPLUNK_START_ARGS=--accept-license -e SPLUNK_PASSWORD=changeme -p 8000:8000 -p 8191:8191 -p 8089:8089 --name splunk splunk/splunk:7.3
-    - run: pip install -r requirements.txt
+    - run: python2.7 -m pip install -r requirements.txt
     - name: wait for service
       run: >-
         tries=0;
@@ -38,10 +40,20 @@ jobs:
           sleep 2;
           status=`docker inspect -f '{{ .State.Health.Status }}' splunk`
           look_exit=$?;
-          if [[ "$status" = "healthy" ]]; then echo "Container is ready"; break; fi;
+          if [[ "$status" = "healthy" ]]; then echo "Container is ready"; sleep 2; break; fi;
           if [[ "$tries" -ge "$max_tries" ]]; then echo "Container did not become healthy in time"; exit 1; break; fi;
         done;
-    - run: python -m unittest discover
+    - run: python2.7 -m unittest discover
     - name: cleanup
       if: ${{ always() }}
       run: docker stop splunk
+  build_spl:
+    container:
+      image: splunk/splunk:7.3
+      options: --user root
+    steps:
+    - run: sudo mkdir -p /opt/splunk/etc/apps/amp4e_events_input
+    - run: cd /opt/splunk/etc/apps/amp4e_events_input
+    - uses: actions/checkout@v2
+    - run: pip install -r requirements.txt
+    - run: cd release;sudo fab splunkbase_release
