@@ -12,15 +12,3 @@ services:
     ports:
       - "8000:8000"
     working_dir: /opt/splunk/etc/apps/amp4e_events_input
-    
-# Uncomment below for a clean container to use for testing
-  # splunk-test:
-  #   image: splunk/splunk:latest
-  #   environment:
-  #     - SPLUNK_START_ARGS=--accept-license
-  #     - SPLUNK_PASSWORD=changeme
-  #     - DEBUG=true
-  #   ports:
-  #     - "8001:8000"
-  #   entrypoint: /sbin/entrypoint.sh
-  #   command: start-service

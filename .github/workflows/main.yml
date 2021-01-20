@@ -21,30 +21,19 @@ jobs:
         tags: amp4e/amp4e_splunk_events_input:latest
   test:
     runs-on: ubuntu-latest
-    container:
-      image: python:2.7
-    services:
-      splunk:
-        image: amp4e/amp4e_splunk_events_input:latest
-        ports:
-          - 8000:8000
-        env:
-          SPLUNK_START_ARGS: --accept-license
-          SPLUNK_PASSWORD: changeme
-          DEBUG: true
-        options: >-
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
     - uses: actions/checkout@v2
-    # - run: apt update && apt-get install -y python2.7 
+    - run: docker-compose -f docker-compose.ci.yml up -d
+    - run: apt update && apt-get install -y python2.7 
     - run: pip install -r requirements.txt
     - name: wait for service
       uses: nev7n/wait_for_response@v1
       with:
-        url: 'http://splunk:8000/'
-        responseCode: 200
+        url: 'http://localhost:8000/'
+        responseCode: 303
         timeout: 120000
         interval: 500
     - run: python -m unittest discover
+    - name: cleanup
+      if: ${{ always() }}
+      run: docker-compose -f docker-compose.ci.yml down

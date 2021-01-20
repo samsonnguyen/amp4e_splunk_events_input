@@ -1,0 +1,10 @@
+version: '3.4'
+services:
+  splunk:
+    image: splunk/splunk:7.3
+    environment:
+      - SPLUNK_START_ARGS=--accept-license
+      - SPLUNK_PASSWORD=changeme
+      - DEBUG=true
+    ports:
+      - "8000:8000"
