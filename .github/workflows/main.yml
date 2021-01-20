@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: apt-get update -y && apt-get install -y python2.7 
+    - run: sudo apt-get update -y && sudo apt-get install -y python2.7 
     - run: docker-compose -f docker-compose.ci.yml up -d
     - run: pip install -r requirements.txt
     - name: wait for service
