@@ -23,18 +23,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: sudo apt-get update -y && sudo apt-get install -y python2.7 
-    - run: docker-compose -f docker-compose.ci.yml up -d
-    - run: pip install -r requirements.txt
-    - run: docker ps -a
-    - name: wait for service
-      uses: nev7n/wait_for_response@v1
+    - uses: actions/setup-python@v1
       with:
-        url: 'http://localhost:8000/'
-        responseCode: 303
-        timeout: 120000
-        interval: 500
+        python-version: "2.7.18"
+    - run: docker run --rm -d -e SPLUNK_START_ARGS=--accept-license -e SPLUNK_PASSWORD=changeme -p 8000:8000 --name splunk splunk/splunk:7.3
+    - run: pip install -r requirements.txt
+    - name: wait for service
+      run: >-
+        tries=0;
+        max_tries=60;
+        while [[ true ]]; do
+          tries=$((tries + 1));
+          echo "waiting for the Splunk container to be ready... [$tries]";
+          sleep 2;
+          status=`docker inspect -f '{{ .State.Health.Status }}' splunk`
+          look_exit=$?;
+          if [[ "$status" = "healthy" ]]; then echo "Container is ready"; break; fi;
+          if [[ "$tries" -ge "$max_tries" ]]; then echo "Container did not become healthy in time"; exit 1; break; fi;
+        done;
     - run: python -m unittest discover
     - name: cleanup
       if: ${{ always() }}
-      run: docker-compose -f docker-compose.ci.yml down
+      run: docker stop splunk && docker rm splunk
