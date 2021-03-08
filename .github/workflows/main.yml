@@ -18,7 +18,6 @@ jobs:
         context: ./
         file: ./Dockerfile
         push: true
-        target: dev
         tags: amp4e/amp4e_splunk_events_input:latest
   test:
     runs-on: ubuntu-latest
