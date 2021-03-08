@@ -49,4 +49,7 @@ jobs:
       if: ${{ env.ACT }}
     - run: python3 -m pip install -r bin/requirements-splunk.txt --target=/opt/splunk/lib/python3.7/site-packages
     - run: python3 -m pip install -r requirements.txt
+    - uses: jakejarvis/wait-action@master
+      with:
+        time: '10s'
     - run: /opt/splunk/bin/splunk cmd python -m unittest discover
