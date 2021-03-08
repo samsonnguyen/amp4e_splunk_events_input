@@ -40,7 +40,6 @@ jobs:
         env:
           SPLUNK_START_ARGS: --accept-license
           SPLUNK_PASSWORD: Changeme123!
-          DEBUG: true
     steps:
     - uses: actions/checkout@v2
     - run: env
