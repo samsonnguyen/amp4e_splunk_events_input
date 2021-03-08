@@ -32,10 +32,9 @@ jobs:
         SPLUNK_API_HOST: splunk
         SPLUNK_API_PORT: 8089
         SPLUNK_API_USERNAME: admin
-      options: --working_dir /opt/splunk/etc/apps/amp4e_events_input
     services:
       splunk:
-        image: amp4e/amp4e_splunk_events_input:latest
+        image: splunk/splunk:8.1.2-debian
         ports:
           - 8000:8000
           - 8089:8089
