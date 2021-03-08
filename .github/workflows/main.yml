@@ -49,11 +49,4 @@ jobs:
       if: ${{ env.ACT }}
     - run: python3 -m pip install -r bin/requirements-splunk.txt --target=/opt/splunk/lib/python3.7/site-packages
     - run: python3 -m pip install -r requirements.txt
-    # - name: wait for service
-    #   uses: nev7n/wait_for_response@v1
-    #   with:
-    #     url: https://splunk:8089
-    #     responseCode: 200
-    #     timeout: 60000
-    #     interval: 500
     - run: /opt/splunk/bin/splunk cmd python -m unittest discover
