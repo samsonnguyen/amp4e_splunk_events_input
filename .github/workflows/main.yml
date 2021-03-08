@@ -51,5 +51,5 @@ jobs:
     - run: python3 -m pip install -r requirements.txt
     - uses: jakejarvis/wait-action@master
       with:
-        time: '10s'
+        time: '30s'
     - run: /opt/splunk/bin/splunk cmd python -m unittest discover
