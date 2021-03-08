@@ -51,5 +51,6 @@ jobs:
     - run: python3 -m pip install -r requirements.txt
     - uses: jakejarvis/wait-action@master
       with:
-        time: '30s'
+        time: '10s' # Unfortunately, Splunk's api endpoint are not ready yet even though docker reports healthy
     - run: /opt/splunk/bin/splunk cmd python -m unittest discover
+    - run: docker logs "${{ job.services.splunk.id }}"
